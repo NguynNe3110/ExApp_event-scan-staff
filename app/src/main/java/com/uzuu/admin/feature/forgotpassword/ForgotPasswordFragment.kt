@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.uzuu.admin.R
 import com.uzuu.admin.databinding.FragmentForgotPasswordBinding
 import com.uzuu.admin.feature.MainActivity
+import kotlinx.coroutines.launch
 
 class ForgotPasswordFragment : Fragment() {
 
@@ -40,7 +41,7 @@ class ForgotPasswordFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.btnSubmit.setOnClickListener {
-            viewModel.onSubmit()
+            viewModel.onSubmit(binding.edtEmail.text.toString().trim())
         }
 
         binding.txtLogin.setOnClickListener {

@@ -22,14 +22,8 @@ class ForgotPasswordViewModel(
     private val _event = MutableSharedFlow<ForgotPasswordUiEvent>(extraBufferCapacity = 3)
     val event = _event.asSharedFlow()
 
-    fun onEmailChange(value: String) {
-        _state.update { it.copy(email = value) }
-    }
-
-    fun onSubmit() {
+    fun onSubmit(email: String) {
         viewModelScope.launch {
-            val email = _state.value.email
-
             if (email.isBlank()) {
                 _event.emit(ForgotPasswordUiEvent.Toast("Vui lòng nhập email"))
                 return@launch

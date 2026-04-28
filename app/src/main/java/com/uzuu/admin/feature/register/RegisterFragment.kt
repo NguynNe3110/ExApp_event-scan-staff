@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.uzuu.admin.R
 import com.uzuu.admin.databinding.FragmentRegisterBinding
 import com.uzuu.admin.feature.MainActivity
+import kotlinx.coroutines.launch
 
 class RegisterFragment : Fragment() {
 
@@ -40,7 +41,13 @@ class RegisterFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.btnRegister.setOnClickListener {
-            viewModel.onRegister()
+            viewModel.onRegister(
+                binding.edtFullName.text.toString().trim(),
+                binding.edtUsername.text.toString().trim(),
+                binding.edtEmail.text.toString().trim(),
+                binding.edtPassword.text.toString().trim(),
+                binding.edtConfirmPassword.text.toString().trim()
+            )
         }
 
         binding.txtLogin.setOnClickListener {

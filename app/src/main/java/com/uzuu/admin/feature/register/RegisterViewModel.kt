@@ -22,49 +22,27 @@ class RegisterViewModel(
     private val _event = MutableSharedFlow<RegisterUiEvent>(extraBufferCapacity = 3)
     val event = _event.asSharedFlow()
 
-    fun onUsernameChange(value: String) {
-        _state.update { it.copy(username = value) }
-    }
-
-    fun onPasswordChange(value: String) {
-        _state.update { it.copy(password = value) }
-    }
-
-    fun onConfirmPasswordChange(value: String) {
-        _state.update { it.copy(confirmPassword = value) }
-    }
-
-    fun onEmailChange(value: String) {
-        _state.update { it.copy(email = value) }
-    }
-
-    fun onFullNameChange(value: String) {
-        _state.update { it.copy(fullName = value) }
-    }
-
-    fun onRegister() {
+    fun onRegister(fullName: String, username: String, email: String, password: String, confirmPassword: String) {
         viewModelScope.launch {
-            val s = _state.value
-
             // Validate
-            if (s.username.isBlank() || s.password.isBlank() || s.email.isBlank() || s.fullName.isBlank()) {
+            if (fullName.isBlank() || username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
                 _event.emit(RegisterUiEvent.Toast("Vui lòng nhập đầy đủ thông tin"))
                 return@launch
             }
 
-            if (s.password != s.confirmPassword) {
+            if (password != confirmPassword) {
                 _event.emit(RegisterUiEvent.Toast("Mật khẩu xác nhận không khớp"))
                 return@launch
             }
 
-            if (s.password.length < 6) {
+            if (password.length < 6) {
                 _event.emit(RegisterUiEvent.Toast("Mật khẩu phải có ít nhất 6 ký tự"))
                 return@launch
             }
 
             _state.update { it.copy(isLoading = true) }
 
-            when (val result = authRepo.register(Register(s.username, s.password, s.email, s.fullName))) {
+            when (val result = authRepo.register(Register(username, password, email, fullName))) {
                 is ApiResult.Success -> {
                     _state.update { it.copy(isLoading = false) }
                     _event.emit(RegisterUiEvent.Toast("Đăng ký thành công! Vui lòng đăng nhập."))

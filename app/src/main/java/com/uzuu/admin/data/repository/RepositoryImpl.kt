@@ -4,9 +4,13 @@ import com.uzuu.admin.core.result.ApiResult
 import com.uzuu.admin.core.result.safeApiCall
 import com.uzuu.admin.data.remote.datasource.AuthRemoteDataSource
 import com.uzuu.admin.data.remote.datasource.CheckInRemoteDataSource
+import com.uzuu.admin.data.remote.dto.request.ForgotPasswordRequestDto
 import com.uzuu.admin.data.remote.dto.request.LoginRequestDto
+import com.uzuu.admin.data.remote.dto.request.RegisterRequestDto
 import com.uzuu.admin.domain.model.CheckInResult
+import com.uzuu.admin.domain.model.ForgotPassword
 import com.uzuu.admin.domain.model.Login
+import com.uzuu.admin.domain.model.Register
 import com.uzuu.admin.domain.repository.AuthRepository
 import com.uzuu.admin.domain.repository.CheckInRepository
 
@@ -21,6 +25,34 @@ class AuthRepositoryImpl(
                 response.result.token
             } else {
                 throw Exception(response.message ?: "Đăng nhập thất bại")
+            }
+        }
+
+    override suspend fun register(request: Register): ApiResult<String> =
+        safeApiCall {
+            val response = remote.register(
+                RegisterRequestDto(
+                    username = request.username,
+                    password = request.password,
+                    email = request.email,
+                    fullName = request.fullName,
+                    organizeId = request.organizeId
+                )
+            )
+            if (response.code == 200 || response.code == 0 || response.code == 1000) {
+                response.result.message
+            } else {
+                throw Exception(response.message ?: "Đăng ký thất bại")
+            }
+        }
+
+    override suspend fun forgotPassword(request: ForgotPassword): ApiResult<String> =
+        safeApiCall {
+            val response = remote.forgotPassword(ForgotPasswordRequestDto(request.email))
+            if (response.code == 200 || response.code == 0 || response.code == 1000) {
+                response.result.message
+            } else {
+                throw Exception(response.message ?: "Gửi yêu cầu khôi phục mật khẩu thất bại")
             }
         }
 }

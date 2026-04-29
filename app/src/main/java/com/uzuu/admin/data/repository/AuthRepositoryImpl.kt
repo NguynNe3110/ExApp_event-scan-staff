@@ -38,8 +38,10 @@ import com.uzuu.admin.domain.repository.AuthRepository
                         role = request.role
                     )
                 )
+                // Kiểm tra nếu result là null hoặc rỗng thì lấy message
+                val resultMessage = response.result?.message ?: response.message
                 if (response.code == 200 || response.code == 0 || response.code == 1000) {
-                    response.result.message
+                    resultMessage ?: "Đăng ký thành công"
                 } else {
                     throw Exception(response.message ?: "Đăng ký thất bại")
                 }
@@ -48,8 +50,10 @@ import com.uzuu.admin.domain.repository.AuthRepository
         override suspend fun forgotPassword(request: ForgotPassword): ApiResult<String> =
             safeApiCall {
                 val response = remote.forgotPassword(ForgotPasswordRequestDto(request.email))
+                // Kiểm tra nếu result là null hoặc rỗng thì lấy message
+                val resultMessage = response.result?.message ?: response.message
                 if (response.code == 200 || response.code == 0 || response.code == 1000) {
-                    response.result.message
+                    resultMessage ?: "Yêu cầu khôi phục mật khẩu đã được gửi"
                 } else {
                     throw Exception(response.message ?: "Gửi yêu cầu khôi phục mật khẩu thất bại")
                 }

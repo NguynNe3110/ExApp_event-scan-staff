@@ -7,6 +7,7 @@
 *.dll
 *.so
 *.a
+*.exe
 
 # Dependencies
 .gradle/
@@ -26,27 +27,33 @@ target/
 # Editors
 .vscode/
 .idea/
-*.iml
-*.ipr
-*.iws
-
-# Java/Kotlin specific
-*.jar
-*.war
-*.ear
-*.class
-!*.kt
-!*.java
 
 # Coverage reports
 coverage/
 htmlcov/
 .coverage
 
-# MyPy cache
-.mypy_cache/
-.pytest_cache/
-
-# Distribution artifacts
-dist/
+# Compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
 ```

@@ -22,7 +22,7 @@ class RegisterViewModel(
     private val _event = MutableSharedFlow<RegisterUiEvent>(extraBufferCapacity = 3)
     val event = _event.asSharedFlow()
 
-    fun onRegister(fullName: String, username: String, email: String, password: String, confirmPassword: String) {
+    fun onRegister(fullName: String, username: String, email: String, password: String, confirmPassword: String, phone: String, address: String) {
         viewModelScope.launch {
             // Validate
             if (fullName.isBlank() || username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
@@ -42,7 +42,7 @@ class RegisterViewModel(
 
             _state.update { it.copy(isLoading = true) }
 
-            when (val result = authRepo.register(Register(username, password, email, fullName))) {
+            when (val result = authRepo.register(Register(username, password, email, fullName, phone.ifBlank { null }, address.ifBlank { null }))) {
                 is ApiResult.Success -> {
                     _state.update { it.copy(isLoading = false) }
                     _event.emit(RegisterUiEvent.Toast("Đăng ký thành công! Vui lòng đăng nhập."))

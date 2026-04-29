@@ -46,7 +46,9 @@ class RegisterFragment : Fragment() {
                 binding.edtUsername.text.toString().trim(),
                 binding.edtEmail.text.toString().trim(),
                 binding.edtPassword.text.toString().trim(),
-                binding.edtConfirmPassword.text.toString().trim()
+                binding.edtConfirmPassword.text.toString().trim(),
+                binding.edtPhone.text.toString().trim(),
+                binding.edtAddress.text.toString().trim()
             )
         }
 

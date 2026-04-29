@@ -1,42 +1,52 @@
 ```
-# Gradle
-.gradle/
-build/
-!gradlew
-!gradle/
-
-# Compiled files
+# Compiled and build artifacts
 *.class
-*.jar
-*.war
-*.aar
+*.o
+*.obj
+*.out
+*.dll
+*.so
+*.a
 
 # Dependencies
-.libs/
-lib/
+.gradle/
+build/
+target/
 
-# IDE
-.idea/
-*.iml
-*.ipr
-*.iws
-
-# Temp files
-*.tmp
-*.temp
+# Logs and temp files
 *.log
+*.tmp
+*.swp
 
 # Environment
 .env
 .env.local
 *.env.*
 
-# OS
-.DS_Store
-Thumbs.db
+# Editors
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
 
-# Coverage
+# Java/Kotlin specific
+*.jar
+*.war
+*.ear
+*.class
+!*.kt
+!*.java
+
+# Coverage reports
 coverage/
 htmlcov/
 .coverage
+
+# MyPy cache
+.mypy_cache/
+.pytest_cache/
+
+# Distribution artifacts
+dist/
 ```

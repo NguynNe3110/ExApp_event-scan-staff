@@ -39,8 +39,9 @@ class AuthRepositoryImpl(
                     organizeId = request.organizeId
                 )
             )
+            // Server trả về ApiResponse<String> với result là String message
             if (response.code == 200 || response.code == 0 || response.code == 1000) {
-                response.result.message
+                response.result.message.ifEmpty { "Đăng ký thành công" }
             } else {
                 throw Exception(response.message ?: "Đăng ký thất bại")
             }
@@ -49,8 +50,9 @@ class AuthRepositoryImpl(
     override suspend fun forgotPassword(request: ForgotPassword): ApiResult<String> =
         safeApiCall {
             val response = remote.forgotPassword(ForgotPasswordRequestDto(request.email))
+            // Server trả về ApiResponse<String> với result là String message
             if (response.code == 200 || response.code == 0 || response.code == 1000) {
-                response.result.message
+                response.result.message.ifEmpty { "Yêu cầu khôi phục mật khẩu đã được gửi" }
             } else {
                 throw Exception(response.message ?: "Gửi yêu cầu khôi phục mật khẩu thất bại")
             }

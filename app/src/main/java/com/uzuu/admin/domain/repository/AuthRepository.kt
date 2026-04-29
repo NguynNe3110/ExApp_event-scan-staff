@@ -9,4 +9,6 @@ interface AuthRepository {
     suspend fun login(request: Login): ApiResult<String>  // returns token
     suspend fun register(request: Register): ApiResult<String>  // returns success message
     suspend fun forgotPassword(request: ForgotPassword): ApiResult<String>  // returns success message
+    suspend fun verifyOtp(email: String, otp: String): ApiResult<String>  // returns success message
+    suspend fun resendOtp(email: String): ApiResult<String>  // returns success message
 }

@@ -1,8 +1,257 @@
 # API Documentation
 
-Tổng hợp các API của project `BE-event-mng-v2`.
+Tổng hợp các API của project `BE-event-mng-v3`.
 Response tiêu chuẩn: `ApiResponse<T>` (nhiều endpoint trả về kiểu generic này).
 Một số endpoint yêu cầu bearer token (OpenAPI `bearerAuth`) hoặc quyền role (`@PreAuthorize`).
+
+## DTO Reference
+
+Phần này đặt ngay đầu file để người đọc tra nhanh request/response trước khi xem từng endpoint.
+
+### Request DTOs
+
+- `AuthenticationRequest` - `src/main/java/com/sa/event_mng/modules/identity/application/dto/request/AuthenticationRequest.java`
+    - `username`: String, bắt buộc
+    - `password`: String, bắt buộc
+
+- `UserCreateRequest` - `src/main/java/com/sa/event_mng/modules/identity/application/dto/request/UserCreateRequest.java`
+    - `username`: String, 3-50 ký tự, bắt buộc
+    - `password`: String, 6-100 ký tự, bắt buộc
+    - `email`: String, email, bắt buộc
+    - `fullName`: String, tối đa 100 ký tự, bắt buộc
+    - `phone`: String, 10-11 chữ số
+    - `address`: String, tối đa 255 ký tự
+    - `role`: String
+
+- `StaffCreateRequest` - `src/main/java/com/sa/event_mng/modules/identity/application/dto/request/StaffCreateRequest.java`
+    - `username`: String, bắt buộc
+    - `email`: String, email, bắt buộc
+    - `password`: String, tối thiểu 8 ký tự, bắt buộc
+    - `fullName`: String, bắt buộc
+
+- `UserUpdateRequest` - `src/main/java/com/sa/event_mng/modules/identity/application/dto/request/UserUpdateRequest.java`
+    - `password`: String, tối thiểu 6 ký tự
+    - `email`: String, email
+    - `fullName`: String, tối đa 100 ký tự
+    - `phone`: String, 10-11 chữ số
+    - `address`: String, tối đa 255 ký tự
+
+- `ForgotPasswordRequest` - `src/main/java/com/sa/event_mng/modules/identity/application/dto/request/ForgotPasswordRequest.java`
+    - `email`: String, bắt buộc
+
+- `ResetPasswordRequest` - `src/main/java/com/sa/event_mng/modules/identity/application/dto/request/ResetPasswordRequest.java`
+    - `otp`: String, bắt buộc
+    - `newPassword`: String, tối thiểu 8 ký tự
+
+- `IntrospectRequest` - `src/main/java/com/sa/event_mng/modules/identity/application/dto/request/IntrospectRequest.java`
+    - `token`: String
+
+- `RefreshRequest` - `src/main/java/com/sa/event_mng/modules/identity/application/dto/request/RefreshRequest.java`
+    - `token`: String
+
+- `LogoutRequest` - `src/main/java/com/sa/event_mng/modules/identity/application/dto/request/LogoutRequest.java`
+    - `token`: String
+
+- `CartItemRequest` - `src/main/java/com/sa/event_mng/modules/ordering/application/dto/request/CartItemRequest.java`
+    - Lưu ý: trong tài liệu cũ bạn có thể thấy tên `CartRequest`, nhưng trong code thực tế DTO đang là `CartItemRequest`.
+    - `ticketTypeId`: Long, bắt buộc
+    - `quantity`: Integer, tối thiểu 1
+
+- `CategoryRequest` - `src/main/java/com/sa/event_mng/modules/event/application/dto/request/CategoryRequest.java`
+    - `name`: String, tối thiểu 5 ký tự, bắt buộc
+    - `description`: String
+
+- `TicketTypeRequest` - `src/main/java/com/sa/event_mng/modules/event/application/dto/request/TicketTypeRequest.java`
+    - `name`: String, bắt buộc
+    - `description`: String
+    - `price`: BigDecimal, tối thiểu 0
+    - `totalQuantity`: Integer, tối thiểu 1
+    - `eventId`: Long
+
+- `EventRequest` - `src/main/java/com/sa/event_mng/modules/event/application/dto/request/EventRequest.java`
+    - `name`: String, bắt buộc
+    - `categoryId`: Long, bắt buộc
+    - `location`: String
+    - `startTime`: LocalDateTime, bắt buộc
+    - `endTime`: LocalDateTime, bắt buộc
+    - `saleStartDate`: LocalDateTime
+    - `saleEndDate`: LocalDateTime
+    - `description`: String
+    - `status`: `EventStatus`
+    - `files`: List<MultipartFile>
+    - `ticketTypes`: List<TicketTypeRequest>
+
+- `VoucherRequest` - `src/main/java/com/sa/event_mng/modules/marketing/application/dto/request/VoucherRequest.java`
+    - `code`: String, bắt buộc
+    - `discountType`: String, bắt buộc
+    - `amount`: BigDecimal, bắt buộc
+    - `maxDiscount`: BigDecimal
+    - `minOrderAmount`: BigDecimal
+    - `quantity`: Integer
+    - `startDate`: LocalDateTime, bắt buộc
+    - `endDate`: LocalDateTime, bắt buộc
+    - `eventId`: Long
+
+- `VoucherResponse` - `src/main/java/com/sa/event_mng/modules/marketing/application/dto/response/VoucherResponse.java`
+    - `id`: Long
+    - `code`: String
+    - `discountType`: String
+    - `amount`: BigDecimal
+    - `maxDiscount`: BigDecimal
+    - `minOrderAmount`: BigDecimal
+    - `quantity`: Integer
+    - `startDate`: LocalDateTime
+    - `endDate`: LocalDateTime
+    - `eventId`: Long
+    - `eventName`: String
+    - `creatorName`: String
+
+### Response DTOs
+
+- `ApiResponse<T>` - `src/main/java/com/sa/event_mng/shared/dto/ApiResponse.java`
+    - `code`: int, mặc định 1000
+    - `message`: String
+    - `result`: T
+
+- `AuthenticationResponse` - `src/main/java/com/sa/event_mng/modules/identity/application/dto/response/AuthenticationResponse.java`
+    - `token`: String
+
+- `IntrospectResponse` - `src/main/java/com/sa/event_mng/modules/identity/application/dto/response/IntrospectResponse.java`
+    - `valid`: boolean
+
+- `UserResponse` - `src/main/java/com/sa/event_mng/modules/identity/application/dto/response/UserResponse.java`
+    - `id`: Long
+    - `username`: String
+    - `email`: String
+    - `fullName`: String
+    - `phone`: String
+    - `address`: String
+    - `enabled`: boolean
+    - `roles`: Set<Role>
+    - `createdAt`: LocalDateTime
+
+- `OrganizerResponse` - `src/main/java/com/sa/event_mng/modules/identity/application/dto/response/OrganizerResponse.java`
+    - `id`: Long
+    - `fullName`: String
+    - `email`: String
+
+- `CartItemResponse` - `src/main/java/com/sa/event_mng/modules/ordering/application/dto/response/CartItemResponse.java`
+    - `id`: Long
+    - `ticketTypeId`: Long
+    - `ticketTypeName`: String
+    - `eventName`: String
+    - `quantity`: Integer
+    - `unitPrice`: BigDecimal
+    - `subtotal`: BigDecimal
+
+- `CartResponse` - `src/main/java/com/sa/event_mng/modules/ordering/application/dto/response/CartResponse.java`
+    - `id`: Long
+    - `items`: List<CartItemResponse>
+    - `totalAmount`: BigDecimal
+
+- `CategoryResponse` - `src/main/java/com/sa/event_mng/modules/event/application/dto/response/CategoryResponse.java`
+    - `id`: Long
+    - `name`: String
+    - `description`: String
+
+- `TicketTypeResponse` - `src/main/java/com/sa/event_mng/modules/event/application/dto/response/TicketTypeResponse.java`
+    - `id`: Long
+    - `name`: String
+    - `price`: BigDecimal
+    - `totalQuantity`: Integer
+    - `remainingQuantity`: Integer
+    - `description`: String
+
+- `EventResponse` - `src/main/java/com/sa/event_mng/modules/event/application/dto/response/EventResponse.java`
+    - `id`: Long
+    - `name`: String
+    - `category`: `CategoryResponse`
+    - `organizer`: `OrganizerResponse`
+    - `location`: String
+    - `province`: String
+    - `provinceName`: String
+    - `address`: String
+    - `startTime`: LocalDateTime
+    - `endTime`: LocalDateTime
+    - `saleStartDate`: LocalDateTime
+    - `saleEndDate`: LocalDateTime
+    - `description`: String
+    - `status`: `EventStatus`
+    - `imageUrls`: List<String>
+    - `ticketTypes`: List<TicketTypeResponse>
+    - `createdAt`: LocalDateTime
+    - `updatedAt`: LocalDateTime
+
+- `OrderResponse` - `src/main/java/com/sa/event_mng/modules/ordering/application/dto/response/OrderResponse.java`
+    - `id`: Long
+    - `organizerAmount`: BigDecimal
+    - `platformFeeRate`: Float
+    - `serviceFee`: BigDecimal
+    - `totalAmount`: BigDecimal
+    - `paymentMethod`: `PaymentMethod`
+    - `paymentStatus`: `PaymentStatus`
+    - `orderStatus`: `OrderStatus`
+    - `orderDate`: LocalDateTime
+
+- `TicketResponse` - `src/main/java/com/sa/event_mng/modules/ticketing/application/dto/response/TicketResponse.java`
+    - `id`: Long
+    - `eventName`: String
+    - `ticketTypeName`: String
+    - `ticketCode`: String
+    - `qrCode`: String
+    - `status`: `TicketStatus`
+    - `usedAt`: LocalDateTime
+
+- `EventRevenueStatsOrganizerResponse` - `src/main/java/com/sa/event_mng/modules/event/application/dto/response/EventRevenueStatsOrganizerResponse.java`
+    - `eventName`: String
+    - `totalRevenue`: BigDecimal
+    - `ticketsSold`: Integer
+    - `percentageOfTicketsSold`: Double
+
+- `EventRevenueStatsAdminResponse` - `src/main/java/com/sa/event_mng/modules/event/application/dto/response/EventRevenueStatsAdminResponse.java`
+    - `totalRevenue`: BigDecimal
+    - `monthlyRevenues`: List<MonthlyRevenueResponse>
+
+- `MonthlyRevenueResponse` - `src/main/java/com/sa/event_mng/modules/event/application/dto/response/MonthlyRevenueResponse.java`
+    - `year`: int
+    - `month`: int
+    - `revenue`: BigDecimal
+
+- `EventStatusStatsResponse` - `src/main/java/com/sa/event_mng/modules/event/application/dto/response/EventStatusStatsResponse.java`
+    - `quarter`: Long
+    - `year`: Long
+    - `total`: Long
+    - `eventStatusStatsDetail`: List<EventStatusStatsDetail>
+
+- `EventTemporalStatsResponse` - `src/main/java/com/sa/event_mng/modules/event/application/dto/response/EventTemporalStatsResponse.java`
+    - `day`: String
+    - `eventTemporalStatsDetail`: List<EventTemporalStatsDetail>
+
+- `OrganizerStatsResponse` - `src/main/java/com/sa/event_mng/modules/event/application/dto/response/OrganizerStatsResponse.java`
+    - `totalEvents`: long
+    - `totalTicketsSold`: long
+    - `totalRevenue`: double
+    - `eventStats`: List<EventStat>
+    - `monthlyRevenues`: List<MonthlyRevenue>
+
+- `BlogEventResponse` - `src/main/java/com/sa/event_mng/modules/event/application/dto/response/BlogEventResponse.java`
+    - `id`: Long
+    - `name`: String
+    - `location`: String
+    - `province`: String
+    - `startTime`: LocalDateTime
+    - `endTime`: LocalDateTime
+    - `saleStartDate`: LocalDateTime
+    - `saleEndDate`: LocalDateTime
+    - `descriptionStatus`: String
+    - `imageUrl`: String
+
+- `Map<String, Long>` from `GET /users/admin/stats`
+    - `customers`: Long
+    - `organizers`: Long
+    - `total`: Long
+
+> Ghi chú: phần endpoint bên dưới vẫn giữ nguyên để tra API theo controller, còn mục này là index nhanh cho DTO.
 
 ---
 
@@ -16,6 +265,11 @@ Một số endpoint yêu cầu bearer token (OpenAPI `bearerAuth`) hoặc quyề
 - POST /auth/register
     - Mô tả: Đăng ký tài khoản mới
     - Request: `UserCreateRequest`
+    - Response: `String`
+
+- POST /auth/register-staff
+    - Mô tả: Organizer đăng ký tài khoản cho Staff
+    - Request: `StaffCreateRequest`
     - Response: `String`
 
 - GET /auth/verify?token={token}
@@ -150,6 +404,12 @@ Một số endpoint yêu cầu bearer token (OpenAPI `bearerAuth`) hoặc quyề
 
 - GET /events?page={page}&size={size}
     - Mô tả: Lấy danh sách sự kiện đã đăng
+    - Query filters: `search`, `name`, `province`, `provinceCode`, `minPrice`, `maxPrice`, `startDate`, `endDate`
+    - Response: `Page<EventResponse>`
+
+- GET /events/search?page={page}&size={size}
+    - Mô tả: Tìm kiếm sự kiện (alias của `/events`)
+    - Query filters: `search`, `name`, `province`, `provinceCode`, `minPrice`, `maxPrice`, `startDate`, `endDate`
     - Response: `Page<EventResponse>`
 
 - GET /events/{id}
@@ -244,28 +504,42 @@ Một số endpoint yêu cầu bearer token (OpenAPI `bearerAuth`) hoặc quyề
     - Roles: ORGANIZER
     - Response: `OrganizerStatsResponse`
 
+- GET /events/blog-news
+    - Mô tả: Lấy dữ liệu đồng bộ cho trang Blog tin tức
+    - Response: `List<BlogEventResponse>`
+
 ---
 
-## OrderController (base: /orders)
+## BlogController (base: /blog)
 
-- POST /orders/checkout?paymentMethod={paymentMethod}
+- GET /blog/news
+    - Mô tả: Lấy dữ liệu tin tức sự kiện cho trang Blog
+    - Response: `List<BlogEventResponse>`
+
+---
+
+## OrderController (base: /bookings)
+
+- POST /bookings/checkout?paymentMethod={paymentMethod}&voucherCode={voucherCode}
     - Mô tả: Thanh toán toàn bộ giỏ hàng
     - Query: `paymentMethod` (`PaymentMethod` enum)
+    - Query: `voucherCode` (optional)
     - Response: `OrderResponse`
 
-- POST /orders/checkout-selected
+- POST /bookings/checkout-selected?paymentMethod={paymentMethod}&voucherCode={voucherCode}
     - Mô tả: Thanh toán các mục được chọn trong giỏ hàng
     - Request: `List<Long>` (body: itemIds)
     - Query: `paymentMethod`
+    - Query: `voucherCode` (optional)
     - Response: `OrderResponse`
 
-- GET /orders?page={page}&size={size}
+- GET /bookings?page={page}&size={size}
     - Mô tả: Xem lịch sử đơn hàng của tôi
     - Response: `Page<OrderResponse>`
 
 ### Ví dụ: Thanh toán giỏ hàng
 
-- Endpoint: `POST /orders/checkout?paymentMethod={paymentMethod}`
+- Endpoint: `POST /bookings/checkout?paymentMethod={paymentMethod}`
 - Parameters:
     - `paymentMethod` (query) — `MOMO`, `VNPAY`, `BANKING`
 - Response example:
@@ -287,7 +561,7 @@ Một số endpoint yêu cầu bearer token (OpenAPI `bearerAuth`) hoặc quyề
 
 ### Ví dụ: Thanh toán các mục được chọn
 
-- Endpoint: `POST /orders/checkout-selected?paymentMethod={paymentMethod}`
+- Endpoint: `POST /bookings/checkout-selected?paymentMethod={paymentMethod}`
 - Request body example:
 
 ```json
@@ -313,6 +587,19 @@ Một số endpoint yêu cầu bearer token (OpenAPI `bearerAuth`) hoặc quyề
     }
 }
 ```
+
+---
+
+## VoucherController (base: /vouchers)
+
+- POST /vouchers
+    - Mô tả: Tạo mã giảm giá mới (ADMIN/ORGANIZER)
+    - Request: `VoucherRequest`
+    - Response: `VoucherResponse`
+
+- GET /vouchers?page={page}&size={size}
+    - Mô tả: Lấy danh sách mã giảm giá
+    - Response: `Page<VoucherResponse>`
 
 ---
 
@@ -412,26 +699,38 @@ Một số endpoint yêu cầu bearer token (OpenAPI `bearerAuth`) hoặc quyề
     - Mô tả: Lấy thông tin của chính mình
     - Response: `UserResponse`
 
-- GET /users?page={page}&size={size}&search={search}
-    - Mô tả: Lấy danh sách người dùng (ADMIN)
-    - Response: `Page<UserResponse>`
-
-- GET /users/{username}
-    - Mô tả: Lấy người dùng theo Username
-    - Path: `username`
-    - Response: `UserResponse`
-
 - PUT /users/{username}
-    - Mô tả: Cập nhật người dùng
+    - Mô tả: Cập nhật hồ sơ cá nhân
     - Request: `UserUpdateRequest`
     - Response: `UserResponse`
 
-- DELETE /users/{username}
-    - Mô tả: Xóa người dùng (vô hiệu hóa) (ADMIN)
+- GET /users/admin?page={page}&size={size}&search={search}&role={role}
+    - Mô tả: [ADMIN] Lấy danh sách Customer hoặc Organizer
+    - Query: `role` = `CUSTOMER` hoặc `ORGANIZER`, để trống thì lấy cả hai
+    - Response: `Page<UserResponse>`
+
+- GET /users/admin/stats
+    - Mô tả: [ADMIN] Thống kê số lượng Customer và Organizer
+    - Response: `Map<String, Long>`
+
+- DELETE /users/admin/{username}
+    - Mô tả: [ADMIN] Vô hiệu hóa tài khoản Customer/Organizer
     - Response: `String`
 
-- PATCH /users/{username}/unlock
-    - Mô tả: Mở khóa người dùng (ADMIN)
+- PATCH /users/admin/{username}/unlock
+    - Mô tả: [ADMIN] Mở khóa tài khoản Customer/Organizer
+    - Response: `String`
+
+- GET /users/organizer/my-staff?page={page}&size={size}&search={search}
+    - Mô tả: [ORGANIZER] Xem danh sách Staff của mình
+    - Response: `Page<UserResponse>`
+
+- DELETE /users/organizer/staff/{username}
+    - Mô tả: [ORGANIZER] Vô hiệu hóa Staff của mình
+    - Response: `String`
+
+- PATCH /users/organizer/staff/{username}/enable
+    - Mô tả: [ORGANIZER] Kích hoạt lại Staff của mình
     - Response: `String`
 
 ### Ví dụ: Cập nhật người dùng / Lấy thông tin của chính mình

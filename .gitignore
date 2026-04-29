@@ -1,33 +1,42 @@
 ```
-# Kotlin/Android build artifacts
+# Gradle
+.gradle/
+build/
+!gradlew
+!gradle/
+
+# Compiled files
 *.class
 *.jar
 *.war
 *.aar
-*.apk
-*.dex
-
-# Build directories
-build/
-.gradle/
-target/
 
 # Dependencies
-libs/
+.libs/
 lib/
 
-# IDE files
+# IDE
 .idea/
 *.iml
 *.ipr
 *.iws
-.vscode/
 
 # Temp files
 *.tmp
 *.temp
 *.log
 
-# Local configuration
-local.properties
+# Environment
+.env
+.env.local
+*.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
 ```

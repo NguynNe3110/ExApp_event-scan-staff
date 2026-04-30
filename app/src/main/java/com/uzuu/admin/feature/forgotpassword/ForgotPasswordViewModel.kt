@@ -39,8 +39,8 @@ class ForgotPasswordViewModel(
             when (val result = authRepo.forgotPassword(ForgotPassword(email))) {
                 is ApiResult.Success -> {
                     _state.update { it.copy(isLoading = false) }
-                    _event.emit(ForgotPasswordUiEvent.Toast("Yêu cầu khôi phục mật khẩu đã được gửi!"))
-                    _event.emit(ForgotPasswordUiEvent.NavigateToLogin)
+                    _event.emit(ForgotPasswordUiEvent.Toast("Mã OTP đã được gửi đến email của bạn!"))
+                    _event.emit(ForgotPasswordUiEvent.NavigateToVerifyOtp(email))
                 }
                 is ApiResult.Error -> {
                     _state.update { it.copy(isLoading = false) }

@@ -57,6 +57,21 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/forgotPasswordFragment"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_forgotPassword_to_verifyOtp"
+            app:destination="@id/verifyOtpFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/verifyOtpFragment"
+        android:name="com.uzuu.admin.feature.verifyotp.VerifyOtpFragment"
+        android:label="Verify OTP">
+
+        <action
+            android:id="@+id/action_verifyOtp_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="false"/>
     </fragment>
 
 </navigation>

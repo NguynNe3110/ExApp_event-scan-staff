@@ -7,5 +7,6 @@ data class ForgotPasswordUiState(
 
 sealed class ForgotPasswordUiEvent {
     data class Toast(val message: String) : ForgotPasswordUiEvent()
+    data class NavigateToVerifyOtp(val email: String) : ForgotPasswordUiEvent()
     object NavigateToLogin : ForgotPasswordUiEvent()
 }

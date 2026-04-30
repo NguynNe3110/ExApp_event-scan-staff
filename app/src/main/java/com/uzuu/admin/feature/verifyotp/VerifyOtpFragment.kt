@@ -1,4 +1,4 @@
-package com.uzuu.admin.feature.forgotpassword
+package com.uzuu.admin.feature.verifyotp
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,17 +12,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.uzuu.admin.R
-import com.uzuu.admin.databinding.FragmentForgotPasswordBinding
+import com.uzuu.admin.databinding.FragmentVerifyOtpBinding
 import com.uzuu.admin.feature.MainActivity
 import kotlinx.coroutines.launch
 
-class ForgotPasswordFragment : Fragment() {
+class VerifyOtpFragment : Fragment() {
 
-    private var _binding: FragmentForgotPasswordBinding? = null
+    private var _binding: FragmentVerifyOtpBinding? = null
     val binding get() = _binding!!
 
-    private val viewModel: ForgotPasswordViewModel by viewModels {
-        ForgotPasswordFactory((requireActivity() as MainActivity).container.authRepo)
+    private val viewModel: VerifyOtpViewModel by viewModels {
+        VerifyOtpFactory((requireActivity() as MainActivity).container.authRepo)
     }
 
     override fun onCreateView(
@@ -30,22 +30,29 @@ class ForgotPasswordFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentForgotPasswordBinding.inflate(inflater, container, false)
+        _binding = FragmentVerifyOtpBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val email = arguments?.getString("email") ?: ""
+        viewModel.setEmail(email)
+        binding.txtEmailHint.text = email
         setupObservers()
         setupClickListeners()
     }
 
     private fun setupClickListeners() {
-        binding.btnSubmit.setOnClickListener {
-            viewModel.onSubmit(binding.edtEmail.text.toString().trim())
+        binding.btnVerify.setOnClickListener {
+            viewModel.onVerify(binding.edtOtp.text.toString().trim())
         }
 
-        binding.txtLogin.setOnClickListener {
-            findNavController().popBackStack()
+        binding.txtBack.setOnClickListener {
+            viewModel.onBack()
+        }
+
+        binding.txtResend.setOnClickListener {
+            viewModel.onResendOtp()
         }
     }
 
@@ -54,10 +61,11 @@ class ForgotPasswordFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
                     val isEnabled = !state.isLoading
-                    binding.edtEmail.isEnabled = isEnabled
-                    binding.btnSubmit.isEnabled = isEnabled
+                    binding.edtOtp.isEnabled = isEnabled
+                    binding.btnVerify.isEnabled = isEnabled
+                    binding.txtResend.isEnabled = isEnabled
                     binding.progress.visibility = if (state.isLoading) View.VISIBLE else View.GONE
-                    binding.btnSubmit.text = if (state.isLoading) "" else "Gửi yêu cầu"
+                    binding.btnVerify.text = if (state.isLoading) "" else "Xác thực"
                 }
             }
         }
@@ -66,16 +74,15 @@ class ForgotPasswordFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.event.collect { event ->
                     when (event) {
-                        is ForgotPasswordUiEvent.Toast ->
+                        is VerifyOtpUiEvent.Toast ->
                             Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
 
-                        is ForgotPasswordUiEvent.NavigateToVerifyOtp ->
+                        is VerifyOtpUiEvent.NavigateToLogin ->
                             findNavController().navigate(
-                                R.id.action_forgotPassword_to_verifyOtp,
-                                android.os.Bundle().apply { putString("email", event.email) }
+                                R.id.action_verifyOtp_to_login
                             )
 
-                        is ForgotPasswordUiEvent.NavigateToLogin ->
+                        is VerifyOtpUiEvent.NavigateBack ->
                             findNavController().popBackStack()
                     }
                 }

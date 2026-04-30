@@ -44,7 +44,7 @@ class LoginViewModel(
 
                     _state.update { it.copy(isLoading = false, username = username) }
                     _event.emit(LoginUiEvent.Toast("Đăng nhập thành công!"))
-                    _event.emit(LoginUiEvent.NavigateToScan)
+                    _event.emit(LoginUiEvent.NavigateToHome)
                 }
                 is ApiResult.Error -> {
                     println("DEBUG [LoginVM] login error: ${result.message}")

@@ -23,12 +23,12 @@ class MainActivity : AppCompatActivity() {
         // ① AppContainer nhận context → tự gọi SessionManager.init() bên trong
         container = AppContainer(applicationContext)
 
-        // ② Nếu đã có token → bỏ qua login, vào thẳng Scan
+        // ② Nếu đã có token → bỏ qua login, vào thẳng Home
         if (SessionManager.getToken() != null) {
             val navHostFragment =
                 supportFragmentManager.findFragmentById(R.id.root_nav_host) as NavHostFragment
             navHostFragment.navController.navigate(
-                R.id.scanFragment,
+                R.id.homeFragment,
                 null,
                 NavOptions.Builder()
                     .setPopUpTo(R.id.root_graph, true)

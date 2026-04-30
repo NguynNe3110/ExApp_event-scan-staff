@@ -14,7 +14,7 @@ class CheckInRepositoryImpl(
         safeApiCall {
             val response = remote.checkIn(ticketCode)
             if (response.code == 200 || response.code == 0 || response.code == 1000) {
-                val dto = response.result
+                val dto = response.result!!
                 CheckInResult(
                     id             = dto.id,
                     eventName      = dto.eventName,

@@ -210,10 +210,7 @@
             android:textSize="15sp"
             android:textColor="@android:color/white"
             app:backgroundTint="#D32F2F"
-            app:cornerRadius="12dp"
-            app:icon="@drawable/ic_nav_profile"
-            app:iconTint="@android:color/white"
-            app:iconGravity="textStart"/>
+            app:cornerRadius="12dp"/>
 
     </LinearLayout>
 </ScrollView>

@@ -83,12 +83,12 @@ class LoginFragment : Fragment() {
                         is LoginUiEvent.Toast ->
                             Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
 
-                        is LoginUiEvent.NavigateToScan ->
+                        is LoginUiEvent.NavigateToHome ->
                             findNavController().navigate(
-                                R.id.scanFragment,
+                                R.id.homeFragment,
                                 null,
                                 NavOptions.Builder()
-                                    .setPopUpTo(R.id.loginFragment, true) // xóa login khỏi backstack
+                                    .setPopUpTo(R.id.loginFragment, true)
                                     .build()
                             )
                     }

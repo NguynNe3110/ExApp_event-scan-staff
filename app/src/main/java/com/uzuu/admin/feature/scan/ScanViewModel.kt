@@ -86,14 +86,6 @@ class ScanViewModel(
         onQrScanned(ticketCode.trim())
     }
 
-    fun onLogout() {
-        SessionManager.clear()
-        viewModelScope.launch {
-            _event.emit(ScanUiEvent.NavigateToLogin)
-        }
-    }
-
-    /** Reset về trạng thái idle — dùng khi bấm nút "Quét tiếp" */
     fun onResetScan() {
         _state.update {
             it.copy(

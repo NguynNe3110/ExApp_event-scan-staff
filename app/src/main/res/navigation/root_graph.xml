@@ -11,8 +11,8 @@
         android:label="Login">
 
         <action
-            android:id="@+id/action_login_to_scan"
-            app:destination="@id/scanFragment"
+            android:id="@+id/action_login_to_home"
+            app:destination="@id/homeFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true"/>
         <action
@@ -24,16 +24,9 @@
     </fragment>
 
     <fragment
-        android:id="@+id/scanFragment"
-        android:name="com.uzuu.admin.feature.scan.ScanFragment"
-        android:label="Scan">
-
-        <action
-            android:id="@+id/action_scan_to_login"
-            app:destination="@id/loginFragment"
-            app:popUpTo="@id/root_graph"
-            app:popUpToInclusive="true"/>
-    </fragment>
+        android:id="@+id/homeFragment"
+        android:name="com.uzuu.admin.feature.home.HomeFragment"
+        android:label="Home"/>
 
     <fragment
         android:id="@+id/registerFragment"

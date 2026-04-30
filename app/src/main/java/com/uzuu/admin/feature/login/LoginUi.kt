@@ -7,5 +7,5 @@ data class LoginUiState(
 
 sealed class LoginUiEvent {
     data class Toast(val message: String) : LoginUiEvent()
-    object NavigateToScan : LoginUiEvent()
+    object NavigateToHome : LoginUiEvent()
 }

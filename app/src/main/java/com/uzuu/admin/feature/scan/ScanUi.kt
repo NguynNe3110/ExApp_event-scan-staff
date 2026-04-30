@@ -19,5 +19,4 @@ enum class ResultStatus { IDLE, SUCCESS, FAIL }
 // ── Event (one-shot) ──────────────────────────────────────────────────────────
 sealed class ScanUiEvent {
     data class Toast(val message: String) : ScanUiEvent()
-    object NavigateToLogin : ScanUiEvent()
 }

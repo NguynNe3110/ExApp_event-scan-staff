@@ -18,8 +18,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
@@ -146,11 +144,6 @@ class ScanFragment : Fragment() {
             viewModel.onResetScan()
             binding.edtManualCode.text?.clear()
         }
-
-        // Đăng xuất
-        binding.btnLogout.setOnClickListener {
-            viewModel.onLogout()
-        }
     }
 
     private fun observeState() {
@@ -229,15 +222,6 @@ class ScanFragment : Fragment() {
                     when (event) {
                         is ScanUiEvent.Toast ->
                             Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
-
-                        is ScanUiEvent.NavigateToLogin ->
-                            findNavController().navigate(
-                                R.id.loginFragment,
-                                null,
-                                NavOptions.Builder()
-                                    .setPopUpTo(R.id.root_graph, true)
-                                    .build()
-                            )
                     }
                 }
             }

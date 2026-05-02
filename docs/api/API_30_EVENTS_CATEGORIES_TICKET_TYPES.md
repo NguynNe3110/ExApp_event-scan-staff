@@ -6,10 +6,12 @@
     - Request: EventRequest (@ModelAttribute)
     - Response: ApiResponse<EventResponse>
 
-- GET /events?page={page}&size={size}
 - GET /events/search?page={page}&size={size}
-    - Query filters: search, name, province, provinceCode, minPrice, maxPrice, startDate, endDate
+    - Query filters: keyword/search, categoryId, province/provinceCode, minPrice, maxPrice, startDate, endDate
     - Response: ApiResponse<Page<EventResponse>>
+
+    - Lấy sự kiện theo danh mục: truyền `categoryId={id}` vào `/events/search`
+    - Ví dụ: `/events/search?page=1&size=10&categoryId=3`
 
 - GET /events/{id}
     - Response: ApiResponse<EventResponse>
@@ -31,13 +33,18 @@
 - GET /events/organizer/my-events?page={page}&size={size}
     - Response: ApiResponse<Page<EventResponse>>
 
-- GET /events/organizer/stats
-    - Response: ApiResponse<OrganizerStatsResponse>
+Note:
 
-### Blog sync
+- `/events/{id}` expects a numeric `id` (Long).
+- Use `/events/search` with `categoryId` to filter events by category.
+- Blog posts are available in `/blog/*` endpoints (see [Statistics & Blog APIs](API_50_STATISTICS_BLOG.md)).
 
-- GET /events/blog-news
-    - Response: ApiResponse<List<BlogEventResponse>>
+Examples:
+
+- Search events: `/events/search?page=1&size=10&keyword=music`
+- Filter by category: `/events/search?page=1&size=10&categoryId=3`
+- Get event by id: `/events/123` (where `123` is numeric event id)
+- Get blog post by slug: `/blog/posts/my-event-announcement`
 
 ## CategoryController (base: /categories)
 

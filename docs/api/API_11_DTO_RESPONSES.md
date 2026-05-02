@@ -56,7 +56,7 @@
 
 ### OrderResponse
 
-- `id`: Long
+- `id`: String
 - `organizerAmount`: BigDecimal
 - `platformFeeRate`: Float
 - `serviceFee`: BigDecimal
@@ -126,6 +126,7 @@
 - `saleEndDate`: LocalDateTime
 - `descriptionStatus`: String
 - `imageUrl`: String
+- `categoryName`: String
 
 ## Statistics
 
@@ -189,3 +190,45 @@
 - `eventId`: Long
 - `eventName`: String
 - `creatorName`: String
+
+## Blog
+
+### BlogPostResponse
+
+- `id`: Long
+- `title`: String
+- `slug`: String
+- `summary`: String
+- `content`: String
+- `thumbnail`: String
+- `eventIds`: Set<Long>
+- `authorName`: String
+- `status`: String
+- `publishedAt`: LocalDateTime
+- `createdAt`: LocalDateTime
+- `tags`: Set<BlogTagResponse>
+
+### BlogTagResponse
+
+- `id`: Long
+- `name`: String
+- `slug`: String
+
+Example `BlogPostResponse` JSON (abbreviated):
+
+```
+{
+	"id": 12,
+	"title": "Event Announcement",
+	"slug": "event-announcement",
+	"summary": "Short summary...",
+	"content": "Full content...",
+	"thumbnail": "https://.../thumb.jpg",
+	"eventIds": [1, 2],
+	"authorName": "Organizer A",
+	"status": "PUBLISHED",
+	"publishedAt": "2026-05-01T10:00:00",
+	"createdAt": "2026-04-28T08:00:00",
+	"tags": [{ "id": 1, "name": "music", "slug": "music" }]
+}
+```

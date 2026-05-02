@@ -13,6 +13,6 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.uzuu.admin.feature.profile.ProfileFragment"
-        android:label="Tôi"/>
+        android:label="Cài đặt"/>
 
 </navigation>

@@ -102,3 +102,16 @@
 - `startDate`: LocalDateTime, required
 - `endDate`: LocalDateTime, required
 - `eventId`: Long
+
+## Blog
+
+### BlogPostRequest
+
+- `title`: String, required
+- `summary`: String
+- `content`: String
+- `thumbnail`: String
+- `eventIds`: Set<Long> (IDs of related events)
+- `metaTitle`: String
+- `metaDescription`: String
+- `tagIds`: Set<Long>

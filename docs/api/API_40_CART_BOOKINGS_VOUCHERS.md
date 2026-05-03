@@ -22,15 +22,17 @@
 ## OrderController (base: /bookings)
 
 - POST /bookings/checkout?paymentMethod={paymentMethod}&voucherCode={voucherCode}
-    - Query `paymentMethod`: MOMO | VNPAY | BANKING
+    - Query `paymentMethod`: MOMO | VNPAY | PAYOS
     - Query `voucherCode`: optional
     - Response: ApiResponse<OrderResponse>
+    - Note: neu `paymentMethod = PAYOS` thi `result.paymentUrl` se co gia tri de frontend redirect nguoi dung sang trang thanh toan
 
 - POST /bookings/checkout-selected?paymentMethod={paymentMethod}&voucherCode={voucherCode}
     - Body: List<Long> itemIds
-    - Query `paymentMethod`: MOMO | VNPAY | BANKING
+    - Query `paymentMethod`: MOMO | VNPAY | PAYOS
     - Query `voucherCode`: optional
     - Response: ApiResponse<OrderResponse>
+    - Note: neu `paymentMethod = PAYOS` thi `result.paymentUrl` se co gia tri de frontend redirect nguoi dung sang trang thanh toan
 
 - GET /bookings?page={page}&size={size}
     - Response: ApiResponse<Page<OrderResponse>>
@@ -123,11 +125,17 @@ Tất cả API voucher hiện trả về wrapper chung:
 - Khi thanh toán, truyền `voucherCode` vào `POST /bookings/checkout` hoặc `POST /bookings/checkout-selected`.
 - Nếu muốn kiểm tra mức giảm trước khi thanh toán, gọi `POST /vouchers/validate`.
 
-### Checkout APIs
+## Checkout APIs
 
-- POST /bookings/checkout?paymentMethod={paymentMethod}&voucherCode={voucherCode} - Query `paymentMethod`: MOMO | VNPAY | BANKING - Query `voucherCode`: optional, truyền code đã chọn từ danh sách voucher - Response: ApiResponse<OrderResponse>
+- POST /bookings/checkout?paymentMethod={paymentMethod}&voucherCode={voucherCode} - Query `paymentMethod`: MOMO | VNPAY | PAYOS - Query `voucherCode`: optional, truyền code đã chọn từ danh sách voucher - Response: ApiResponse<OrderResponse>
 
-- POST /bookings/checkout-selected?paymentMethod={paymentMethod}&voucherCode={voucherCode} - Body: List<Long> itemIds - Query `paymentMethod`: MOMO | VNPAY | BANKING - Query `voucherCode`: optional, truyền code đã chọn từ danh sách voucher - Response: ApiResponse<OrderResponse>
+- POST /bookings/checkout-selected?paymentMethod={paymentMethod}&voucherCode={voucherCode} - Body: List<Long> itemIds - Query `paymentMethod`: MOMO | VNPAY | PAYOS - Query `voucherCode`: optional, truyền code đã chọn từ danh sách voucher - Response: ApiResponse<OrderResponse>
+
+## Payment flow note
+
+- `paymentStatus` ban dau la `PENDING` sau khi tao don.
+- Khi thanh toan qua PAYOS thanh cong, webhook se duoc goi ve backend de cap nhat don sang trang thai da thanh toan.
+- Frontend can redirect nguoi dung toi `result.paymentUrl` ngay sau khi tao don thanh cong voi `paymentMethod = PAYOS`.
 
 ## Example: add item to cart
 

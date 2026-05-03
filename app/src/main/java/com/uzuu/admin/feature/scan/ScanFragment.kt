@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -35,7 +36,8 @@ class ScanFragment : Fragment() {
     val binding get() = _binding!!
 
     private val viewModel: ScanViewModel by viewModels {
-        ScanFactory((requireActivity() as MainActivity).container.checkInRepo)
+        val container = (requireActivity() as MainActivity).container
+        ScanFactory(container.checkInRepo, container.profileRepo)
     }
 
     private lateinit var cameraExecutor: ExecutorService
@@ -76,6 +78,7 @@ class ScanFragment : Fragment() {
         }
     }
 
+    @OptIn(ExperimentalGetImage::class)
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
 
@@ -92,28 +95,7 @@ class ScanFragment : Fragment() {
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also { analysis ->
-                    analysis.setAnalyzer(cameraExecutor) { imageProxy ->
-                        val mediaImage = imageProxy.image
-                        if (mediaImage != null) {
-                            val inputImage = InputImage.fromMediaImage(
-                                mediaImage, imageProxy.imageInfo.rotationDegrees
-                            )
-                            scanner.process(inputImage)
-                                .addOnSuccessListener { barcodes ->
-                                    for (barcode in barcodes) {
-                                        if (barcode.format == Barcode.FORMAT_QR_CODE) {
-                                            val rawValue = barcode.rawValue
-                                            if (!rawValue.isNullOrBlank()) {
-                                                viewModel.onQrScanned(rawValue)
-                                            }
-                                        }
-                                    }
-                                }
-                                .addOnCompleteListener { imageProxy.close() }
-                        } else {
-                            imageProxy.close()
-                        }
-                    }
+                    analysis.setAnalyzer(cameraExecutor, ::processImageProxy)
                 }
 
             try {
@@ -129,6 +111,33 @@ class ScanFragment : Fragment() {
             }
 
         }, ContextCompat.getMainExecutor(requireContext()))
+    }
+
+    @OptIn(ExperimentalGetImage::class)
+    @Suppress("UnsafeOptInUsageError")
+    private fun processImageProxy(imageProxy: androidx.camera.core.ImageProxy) {
+        val scanner = BarcodeScanning.getClient()
+        @Suppress("UnsafeOptInUsageError")
+        val mediaImage = imageProxy.image
+        if (mediaImage != null) {
+            val inputImage = InputImage.fromMediaImage(
+                mediaImage, imageProxy.imageInfo.rotationDegrees
+            )
+            scanner.process(inputImage)
+                .addOnSuccessListener { barcodes ->
+                    for (barcode in barcodes) {
+                        if (barcode.format == Barcode.FORMAT_QR_CODE) {
+                            val rawValue = barcode.rawValue
+                            if (!rawValue.isNullOrBlank()) {
+                                viewModel.onQrScanned(rawValue)
+                            }
+                        }
+                    }
+                }
+                .addOnCompleteListener { imageProxy.close() }
+        } else {
+            imageProxy.close()
+        }
     }
 
     private fun setupButtons() {

@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    //annotation
+    id("kotlin-kapt")
 }
 
 android {
@@ -64,5 +66,8 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
 // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-
+// Room
+    implementation("androidx.room:room-runtime:2.7.0")
+    implementation("androidx.room:room-ktx:2.7.0")
+    kapt("androidx.room:room-compiler:2.7.0")
 }

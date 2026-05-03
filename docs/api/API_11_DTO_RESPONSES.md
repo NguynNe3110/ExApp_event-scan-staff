@@ -65,6 +65,7 @@
 - `paymentStatus`: PaymentStatus
 - `orderStatus`: OrderStatus
 - `orderDate`: LocalDateTime
+- `paymentUrl`: String (chi co khi thanh toan bang PAYOS)
 
 ### TicketResponse
 

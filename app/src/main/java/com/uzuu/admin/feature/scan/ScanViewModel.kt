@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.uzuu.admin.core.result.ApiResult
 import com.uzuu.admin.data.session.SessionManager
 import com.uzuu.admin.domain.repository.CheckInRepository
+import com.uzuu.admin.domain.repository.ProfileRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ScanViewModel(
-    private val checkInRepo: CheckInRepository
+    private val checkInRepo: CheckInRepository,
+    private val profileRepo: ProfileRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ScanUiState())
@@ -44,6 +46,20 @@ class ScanViewModel(
             when (val result = checkInRepo.checkIn(ticketCode)) {
                 is ApiResult.Success -> {
                     println("DEBUG [ScanVM] check-in OK: ${result.data}")
+                    
+                    // Lưu scan history
+                    val data = result.data
+                    profileRepo.saveScanHistory(
+                        com.uzuu.admin.domain.model.ScanHistory(
+                            ticketCode = data.ticketCode,
+                            ticketName = data.ticketTypeName,
+                            guestName = null,
+                            eventName = data.eventName,
+                            checkInTime = System.currentTimeMillis(),
+                            status = "SUCCESS"
+                        )
+                    )
+                    
                     _state.update {
                         it.copy(
                             isLoading    = false,
@@ -58,6 +74,20 @@ class ScanViewModel(
 
                 is ApiResult.Error -> {
                     println("DEBUG [ScanVM] check-in error: ${result.message}")
+                    
+                    // Lưu scan history với status FAILED
+                    profileRepo.saveScanHistory(
+                        com.uzuu.admin.domain.model.ScanHistory(
+                            ticketCode = ticketCode,
+                            ticketName = null,
+                            guestName = null,
+                            eventName = null,
+                            checkInTime = System.currentTimeMillis(),
+                            status = "FAILED",
+                            message = result.message
+                        )
+                    )
+                    
                     _state.update {
                         it.copy(
                             isLoading    = false,

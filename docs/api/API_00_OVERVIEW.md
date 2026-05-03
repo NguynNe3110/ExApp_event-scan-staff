@@ -10,6 +10,7 @@ Tai lieu API da duoc tach theo domain de de tra cuu. Moi file deu ghi ro request
 - [Events, Categories, Ticket Types APIs](API_30_EVENTS_CATEGORIES_TICKET_TYPES.md)
 - [Tickets APIs](API_31_TICKETS_CHECKIN.md)
 - [Cart, Bookings, Vouchers APIs](API_40_CART_BOOKINGS_VOUCHERS.md)
+- [Payment APIs](API_41_PAYMENTS.md)
 - [Statistics & Blog APIs](API_50_STATISTICS_BLOG.md)
 
 ## Quy uoc chung

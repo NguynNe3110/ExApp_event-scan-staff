@@ -2,6 +2,7 @@ package com.uzuu.admin.data.remote
 
 import com.uzuu.admin.data.remote.api.AuthApi
 import com.uzuu.admin.data.remote.api.CheckInApi
+import com.uzuu.admin.data.remote.api.ProfileApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -29,6 +30,10 @@ object RetrofitProvider {
             .build()
     }
 
-    val authApi: AuthApi       by lazy { retrofit.create(AuthApi::class.java) }
-    val checkInApi: CheckInApi by lazy { retrofit.create(CheckInApi::class.java) }
+    val authApi: AuthApi             by lazy { retrofit.create(AuthApi::class.java) }
+    val checkInApi: CheckInApi       by lazy { retrofit.create(CheckInApi::class.java) }
+    val profileApi: ProfileApi       by lazy { retrofit.create(ProfileApi::class.java) }
+    val cartApi: com.uzuu.admin.data.remote.api.CartApi by lazy { retrofit.create(com.uzuu.admin.data.remote.api.CartApi::class.java) }
+    val bookingApi: com.uzuu.admin.data.remote.api.BookingApi by lazy { retrofit.create(com.uzuu.admin.data.remote.api.BookingApi::class.java) }
+    val voucherApi: com.uzuu.admin.data.remote.api.VoucherApi by lazy { retrofit.create(com.uzuu.admin.data.remote.api.VoucherApi::class.java) }
 }

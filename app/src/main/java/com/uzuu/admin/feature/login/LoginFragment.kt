@@ -52,10 +52,6 @@ class LoginFragment : Fragment() {
         binding.txtForgotPassword.setOnClickListener {
             findNavController().navigate(R.id.forgotPasswordFragment)
         }
-
-        binding.txtRegister.setOnClickListener {
-            findNavController().navigate(R.id.registerFragment)
-        }
     }
 
     private fun observeState() {

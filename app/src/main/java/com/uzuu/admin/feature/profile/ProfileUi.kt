@@ -16,7 +16,6 @@ sealed class ProfileUiEvent {
     object NavigateToLogin : ProfileUiEvent()
     data class ShowMessage(val message: String) : ProfileUiEvent()
     data class ShowError(val message: String) : ProfileUiEvent()
-    object ShowEditProfileDialog : ProfileUiEvent()
     object ShowChangePasswordDialog : ProfileUiEvent()
     object ShowLogoutConfirmation : ProfileUiEvent()
     object ProfileUpdated : ProfileUiEvent()

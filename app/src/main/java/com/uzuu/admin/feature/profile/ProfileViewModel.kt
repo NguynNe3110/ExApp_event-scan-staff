@@ -52,36 +52,6 @@ class ProfileViewModel(
         }
     }
 
-    fun onEditProfileClick() {
-        viewModelScope.launch {
-            _event.emit(ProfileUiEvent.ShowEditProfileDialog)
-        }
-    }
-
-    fun updateProfile(fullName: String?, email: String?, phone: String?, address: String?) {
-        if (fullName.isNullOrBlank() && email.isNullOrBlank() && phone.isNullOrBlank() && address.isNullOrBlank()) {
-            viewModelScope.launch {
-                _event.emit(ProfileUiEvent.ShowError("Vui lòng nhập ít nhất một thông tin"))
-            }
-            return
-        }
-
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
-            when (val result = profileRepository.updateProfile(fullName, email, phone, address)) {
-                is ApiResult.Success -> {
-                    _state.update { it.copy(profile = result.data, isLoading = false) }
-                    _event.emit(ProfileUiEvent.ShowMessage("Cập nhật thông tin thành công"))
-                    _event.emit(ProfileUiEvent.ProfileUpdated)
-                }
-                is ApiResult.Error -> {
-                    _state.update { it.copy(isLoading = false) }
-                    _event.emit(ProfileUiEvent.ShowError(result.message))
-                }
-            }
-        }
-    }
-
     fun onChangePasswordClick() {
         viewModelScope.launch {
             _event.emit(ProfileUiEvent.ShowChangePasswordDialog)

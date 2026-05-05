@@ -57,9 +57,6 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setupButtons() {
-        binding.btnEditProfile.setOnClickListener {
-            viewModel.onEditProfileClick()
-        }
         binding.btnChangePassword.setOnClickListener {
             viewModel.onChangePasswordClick()
         }
@@ -83,6 +80,9 @@ class ProfileFragment : Fragment() {
                         binding.txtEmail.text = profile.email.ifEmpty { "Chưa cập nhật" }
                         binding.txtPhone.text = profile.phone.ifEmpty { "Chưa cập nhật" }
                         binding.txtAddress.text = profile.address.ifEmpty { "Chưa cập nhật" }
+                        binding.txtOrganizerName.text = profile.organizerName.ifEmpty {
+                            if (profile.role.isNotBlank()) profile.role else "Chưa cập nhật"
+                        }
                     }
 
                     scanHistoryAdapter.submitList(state.scanHistory)
@@ -107,9 +107,6 @@ class ProfileFragment : Fragment() {
                         is ProfileUiEvent.ShowError -> {
                             Toast.makeText(requireContext(), event.message, Toast.LENGTH_LONG).show()
                         }
-                        is ProfileUiEvent.ShowEditProfileDialog -> {
-                            showEditProfileDialog()
-                        }
                         is ProfileUiEvent.ShowChangePasswordDialog -> {
                             showChangePasswordDialog()
                         }
@@ -126,39 +123,6 @@ class ProfileFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun showEditProfileDialog() {
-        val currentProfile = viewModel.state.value.profile
-        
-        val view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_edit_profile, null)
-        val edtFullName = view.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.edt_full_name)
-        val edtEmail = view.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.edt_email)
-        val edtPhone = view.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.edt_phone)
-        val edtAddress = view.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.edt_address)
-
-        currentProfile?.let {
-            edtFullName.setText(it.fullName)
-            edtEmail.setText(it.email)
-            edtPhone.setText(it.phone)
-            edtAddress.setText(it.address)
-        }
-
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Chỉnh sửa thông tin")
-            .setView(view)
-            .setNegativeButton("Hủy") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .setPositiveButton("Lưu") { dialog, _ ->
-                val fullName = edtFullName.text?.toString()?.trim()
-                val email = edtEmail.text?.toString()?.trim()
-                val phone = edtPhone.text?.toString()?.trim()
-                val address = edtAddress.text?.toString()?.trim()
-                viewModel.updateProfile(fullName, email, phone, address)
-                dialog.dismiss()
-            }
-            .show()
     }
 
     private fun showChangePasswordDialog() {

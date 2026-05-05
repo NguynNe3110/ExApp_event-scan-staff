@@ -5,7 +5,6 @@ import com.uzuu.admin.core.result.safeApiCall
 import com.uzuu.admin.data.local.datasource.ScanHistoryLocalDataSource
 import com.uzuu.admin.data.remote.datasource.ProfileRemoteDataSource
 import com.uzuu.admin.data.remote.dto.request.ChangePasswordRequestDto
-import com.uzuu.admin.data.remote.dto.request.UpdateProfileRequestDto
 import com.uzuu.admin.domain.model.Profile
 import com.uzuu.admin.domain.model.ScanHistory
 import com.uzuu.admin.domain.repository.ProfileRepository
@@ -28,39 +27,11 @@ class ProfileRepositoryImpl(
                 fullName = data?.fullName ?: "",
                 phone = data?.phone ?: "",
                 address = data?.address ?: "",
-                role = data?.role ?: ""
+                role = data?.role ?: "",
+                organizerName = data?.organizerName ?: ""
             )
         } else {
             throw Exception(response.message ?: "Lấy thông tin tài khoản thất bại")
-        }
-    }
-
-    override suspend fun updateProfile(
-        fullName: String?,
-        email: String?,
-        phone: String?,
-        address: String?
-    ): ApiResult<Profile> = safeApiCall {
-        val request = UpdateProfileRequestDto(
-            fullName = fullName,
-            email = email,
-            phone = phone,
-            address = address
-        )
-        val response = remote.updateProfile(request)
-        if (response.code == 200 || response.code == 0 || response.code == 1000) {
-            val data = response.result
-            Profile(
-                id = data?.id,
-                username = data?.username ?: "",
-                email = data?.email ?: "",
-                fullName = data?.fullName ?: "",
-                phone = data?.phone ?: "",
-                address = data?.address ?: "",
-                role = data?.role ?: ""
-            )
-        } else {
-            throw Exception(response.message ?: "Cập nhật thông tin thất bại")
         }
     }
 

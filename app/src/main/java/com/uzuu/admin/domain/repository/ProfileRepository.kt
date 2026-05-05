@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProfileRepository {
     suspend fun getProfile(): ApiResult<Profile>
-    suspend fun updateProfile(fullName: String?, email: String?, phone: String?, address: String?): ApiResult<Profile>
     suspend fun changePassword(oldPassword: String, newPassword: String): ApiResult<String>
     
     // Scan History

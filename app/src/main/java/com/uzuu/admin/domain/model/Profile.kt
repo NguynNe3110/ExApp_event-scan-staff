@@ -7,5 +7,6 @@ data class Profile(
     val fullName: String = "",
     val phone: String = "",
     val address: String = "",
-    val role: String = ""
+    val role: String = "",
+    val organizerName: String = ""
 )

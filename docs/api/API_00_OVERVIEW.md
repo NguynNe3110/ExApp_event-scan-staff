@@ -27,3 +27,4 @@ Tai lieu API da duoc tach theo domain de de tra cuu. Moi file deu ghi ro request
 - Cart request dung ten class `CartItemRequest` (khong phai `CartRequest`).
 - Order route hien tai: `/bookings/*` (khong phai `/orders/*`).
 - Event search co 2 duong dan: `/events` va `/events/search` (alias).
+- Staff co API lay thong tin organizer cua minh trong `Auth & Users APIs`.

@@ -4,6 +4,7 @@ import com.uzuu.admin.data.remote.api.ProfileApi
 import com.uzuu.admin.data.remote.dto.BaseResponseDto
 import com.uzuu.admin.data.remote.dto.request.ChangePasswordRequestDto
 import com.uzuu.admin.data.remote.dto.response.ChangePasswordResponseDto
+import com.uzuu.admin.data.remote.dto.response.OrganizerResponse
 import com.uzuu.admin.data.remote.dto.response.UpdateProfileResponseDto
 
 class ProfileRemoteDataSource(
@@ -11,6 +12,10 @@ class ProfileRemoteDataSource(
 ) {
     suspend fun getProfile(): BaseResponseDto<UpdateProfileResponseDto> {
         return api.getProfile()
+    }
+
+    suspend fun getOrganizer(organizerId: Long): BaseResponseDto<OrganizerResponse> {
+        return api.getOrganizer(organizerId)
     }
 
     suspend fun changePassword(request: ChangePasswordRequestDto): BaseResponseDto<ChangePasswordResponseDto> {

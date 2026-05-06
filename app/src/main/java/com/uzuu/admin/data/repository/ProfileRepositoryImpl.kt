@@ -20,6 +20,7 @@ class ProfileRepositoryImpl(
         val response = remote.getProfile()
         if (response.code == 200 || response.code == 0 || response.code == 1000) {
             val data = response.result
+            val organizerName = resolveOrganizerName(data?.organizerId, data?.organizerName)
             Profile(
                 id = data?.id,
                 username = data?.username ?: "",
@@ -28,7 +29,8 @@ class ProfileRepositoryImpl(
                 phone = data?.phone ?: "",
                 address = data?.address ?: "",
                 role = data?.role ?: "",
-                organizerName = data?.organizerName ?: ""
+                organizerId = data?.organizerId,
+                organizerName = organizerName
             )
         } else {
             throw Exception(response.message ?: "Lấy thông tin tài khoản thất bại")
@@ -65,6 +67,23 @@ class ProfileRepositoryImpl(
 
     override suspend fun clearScanHistory(): ApiResult<Int> = safeApiCall {
         scanHistoryLocal.clearAll()
+    }
+
+    private suspend fun resolveOrganizerName(organizerId: Long?, fallbackName: String?): String {
+        if (organizerId == null) {
+            return fallbackName ?: ""
+        }
+
+        return try {
+            val response = remote.getOrganizer(organizerId)
+            if (response.code == 200 || response.code == 0 || response.code == 1000) {
+                response.result?.fullName ?: fallbackName.orEmpty()
+            } else {
+                fallbackName.orEmpty()
+            }
+        } catch (_: Exception) {
+            fallbackName.orEmpty()
+        }
     }
 }
 

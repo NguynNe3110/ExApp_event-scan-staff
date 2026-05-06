@@ -10,6 +10,8 @@ data class UpdateProfileResponseDto(
     val phone: String? = null,
     val address: String? = null,
     val role: String? = null,
+    @SerializedName(value = "organizerId", alternate = ["idOrganizer", "id_organizer"])
+    val organizerId: Long? = null,
     @SerializedName(value = "organizerName", alternate = ["organizerFullName", "ownerName", "managerName", "supervisorName"])
     val organizerName: String? = null,
     val message: String? = null

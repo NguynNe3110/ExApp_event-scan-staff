@@ -73,6 +73,11 @@
 - PATCH /users/organizer/staff/{username}/enable
     - Response: ApiResponse<String>
 
+### Staff APIs
+
+- GET /users/staff/organizer/{organizerId}
+    - Response: ApiResponse<OrganizerResponse>
+
 ## Example: update user profile
 
 Endpoint: PUT /users/{username}

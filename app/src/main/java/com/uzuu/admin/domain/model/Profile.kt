@@ -8,5 +8,6 @@ data class Profile(
     val phone: String = "",
     val address: String = "",
     val role: String = "",
+    val organizerId: Long? = null,
     val organizerName: String = ""
 )

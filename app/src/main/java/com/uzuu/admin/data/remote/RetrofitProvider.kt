@@ -1,5 +1,6 @@
 package com.uzuu.admin.data.remote
 
+import com.uzuu.admin.BuildConfig
 import com.uzuu.admin.data.remote.api.AuthApi
 import com.uzuu.admin.data.remote.api.CheckInApi
 import com.uzuu.admin.data.remote.api.ProfileApi
@@ -10,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitProvider {
 
-    private const val BASE_URL = "https://be-event-mng-v3-production.up.railway.app/"
+    private val BASE_URL = BuildConfig.BASE_URL
 
     private val client: OkHttpClient by lazy {
         val logger = HttpLoggingInterceptor().apply {

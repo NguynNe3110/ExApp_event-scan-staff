@@ -1,3 +1,14 @@
+import java.util.Properties
+
+val envProperties = Properties()
+val envFile = rootProject.file(".env")
+if (envFile.exists()) {
+    envProperties.load(envFile.inputStream())
+}
+
+val baseUrl = envProperties.getProperty("BASE_URL")?.removeSurrounding("\"")?.removeSurrounding("'")
+    ?: "https://be-event-mng-v3-production.up.railway.app/"
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,6 +28,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
     }
 
     buildTypes {
@@ -35,7 +48,10 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    buildFeatures { viewBinding = true }
+    buildFeatures {
+        viewBinding = true
+        buildConfig = true
+    }
 }
 
 dependencies {

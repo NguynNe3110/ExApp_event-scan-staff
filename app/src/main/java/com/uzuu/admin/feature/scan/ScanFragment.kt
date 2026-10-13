@@ -41,6 +41,9 @@ class ScanFragment : Fragment() {
     }
 
     private lateinit var cameraExecutor: ExecutorService
+    private var cameraProvider: ProcessCameraProvider? = null
+    private var cameraPreview: Preview? = null
+    private var cameraAnalysis: ImageAnalysis? = null
 
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -80,37 +83,65 @@ class ScanFragment : Fragment() {
 
     @OptIn(ExperimentalGetImage::class)
     private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+        val currentBinding = _binding ?: return
+        val currentContext = context ?: return
+        val lifecycleOwner = viewLifecycleOwner
+        val executor = cameraExecutor
 
-        cameraProviderFuture.addListener({
-            val cameraProvider = cameraProviderFuture.get()
+        try {
+            val cameraProviderFuture = ProcessCameraProvider.getInstance(currentContext)
+            cameraProviderFuture.addListener({
+                // Ignore callbacks belonging to a destroyed or replaced View.
+                if (_binding !== currentBinding ||
+                    lifecycleOwner.lifecycle.currentState == Lifecycle.State.DESTROYED ||
+                    executor.isShutdown
+                ) return@addListener
 
-            val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(binding.previewView.surfaceProvider)
-            }
+                try {
+                    val provider = cameraProviderFuture.get()
+                    val selector = CameraSelector.DEFAULT_BACK_CAMERA
+                    if (!provider.hasCamera(selector)) {
+                        Toast.makeText(
+                            currentContext,
+                            "Không tìm thấy camera sau. Bạn có thể nhập mã vé thủ công.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        return@addListener
+                    }
 
-            val scanner = BarcodeScanning.getClient()
+                    cameraAnalysis?.clearAnalyzer()
+                    cameraPreview?.let { cameraProvider?.unbind(it) }
+                    cameraAnalysis?.let { cameraProvider?.unbind(it) }
+                    cameraProvider = provider
 
-            val imageAnalysis = ImageAnalysis.Builder()
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-                .also { analysis ->
-                    analysis.setAnalyzer(cameraExecutor, ::processImageProxy)
+                    val preview = Preview.Builder().build().also {
+                        it.setSurfaceProvider(currentBinding.previewView.surfaceProvider)
+                    }
+                    val imageAnalysis = ImageAnalysis.Builder()
+                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                        .build()
+                        .also { it.setAnalyzer(executor, ::processImageProxy) }
+                    cameraPreview = preview
+                    cameraAnalysis = imageAnalysis
+
+                    provider.bindToLifecycle(lifecycleOwner, selector, preview, imageAnalysis)
+                } catch (e: Exception) {
+                    android.util.Log.e("ScanFragment", "Camera initialization failed", e)
+                    Toast.makeText(
+                        currentContext,
+                        "Không thể mở camera. Bạn có thể nhập mã vé thủ công.",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
-
-            try {
-                cameraProvider.unbindAll()
-                cameraProvider.bindToLifecycle(
-                    viewLifecycleOwner,
-                    CameraSelector.DEFAULT_BACK_CAMERA,
-                    preview,
-                    imageAnalysis
-                )
-            } catch (e: Exception) {
-                println("DEBUG [ScanFragment] Camera bind failed: ${e.message}")
-            }
-
-        }, ContextCompat.getMainExecutor(requireContext()))
+            }, ContextCompat.getMainExecutor(currentContext))
+        } catch (e: Exception) {
+            android.util.Log.e("ScanFragment", "Camera initialization failed", e)
+            Toast.makeText(
+                currentContext,
+                "Không thể mở camera. Bạn có thể nhập mã vé thủ công.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     @OptIn(ExperimentalGetImage::class)
@@ -238,8 +269,14 @@ class ScanFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
-        cameraExecutor.shutdown()
         _binding = null
+        cameraAnalysis?.clearAnalyzer()
+        cameraPreview?.let { cameraProvider?.unbind(it) }
+        cameraAnalysis?.let { cameraProvider?.unbind(it) }
+        cameraPreview = null
+        cameraAnalysis = null
+        cameraProvider = null
+        if (::cameraExecutor.isInitialized) cameraExecutor.shutdown()
+        super.onDestroyView()
     }
 }
